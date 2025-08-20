@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "HealthCheckerCLI": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
