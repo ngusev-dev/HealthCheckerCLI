@@ -1,19 +1,27 @@
-﻿using HealthCheckerCLI.Quartz.Workers;
-using Quartz;
+﻿using Quartz;
+using System.Text.Json;
+using HealthCheckerCLI.Helpers;
+using HealthCheckerCLI.Quartz.Workers;
 
 namespace HealthCheckerCLI.Quartz
 {
-    public class Job : IJob
+    public class CheckingServiceJob : IJob
     {
+        private ServiceChecker _serviceChecker;
+
+        public CheckingServiceJob()
+        {
+            _serviceChecker = new();
+        }
+
         public Task Execute(IJobExecutionContext context)
         {
-            var dataMap = context.JobDetail.JobDataMap;
+            HealthCheckEntry? service = JsonSerializer.Deserialize<HealthCheckEntry>(context.MergedJobDataMap.GetString("service")!);
+            string serviceName = context.MergedJobDataMap.GetString("serviceName") ?? String.Empty;
 
-            int interval = dataMap.GetInt("interval");
-            string link = dataMap.GetString("link") ?? String.Empty;
-            string serviceName = dataMap.GetString("serviceName") ?? String.Empty;
+            if (service == null) return Task.CompletedTask;
 
-            return Task.Run(() => ConfigListener.DisplayDate(link, interval, serviceName));   
+            return Task.Run(() => _serviceChecker.PingService(service, serviceName));   
         }
     }
 }

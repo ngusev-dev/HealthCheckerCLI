@@ -22,7 +22,7 @@ namespace HealthCheckerCLI.Services
        {
             try
             {
-                if(CheckConfigurationExsist()) return null;
+                if(!CheckConfigurationExsist()) return null;
 
                 var yamlFile = await File.ReadAllTextAsync(CONFIG_PATH);
                 var config = _deserializer.Deserialize<HealthCheckConfiguration>(yamlFile);
