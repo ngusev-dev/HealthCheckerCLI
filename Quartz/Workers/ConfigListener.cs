@@ -2,9 +2,13 @@
 {
     static class ConfigListener
     {
-        public static void DisplayDate(string link, int interval)
+        static HttpClient httpClient = new();
+
+        async public static void DisplayDate(string link, int interval, string serviceName)
         {
-            Console.WriteLine($"[{DateTime.Now}] Link = {link}, Interval = {interval}s");
+            var responseMessage = await httpClient.GetAsync(new Uri(link)).ConfigureAwait(false);
+
+            Console.WriteLine($"[{serviceName}] StatusCode = {responseMessage.StatusCode} [{(int)responseMessage.StatusCode}], Interval = {interval}");
         }
     }
 }
