@@ -9,7 +9,7 @@
 </p>
 
 <h2 align="center">
-  $${\color{blue}HealhChecker}$$ - CLI utility for monitoring services 📱
+  HealhChecker - CLI utility for monitoring services 📱
 </h2>
 
 <p align="center">
