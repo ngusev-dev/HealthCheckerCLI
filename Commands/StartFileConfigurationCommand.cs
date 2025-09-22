@@ -1,6 +1,5 @@
 ﻿using HealthCheckerCLI.Abstracts;
 using HealthCheckerCLI.Services;
-using Quartz.Impl;
 using Quartz;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -11,9 +10,14 @@ namespace HealthCheckerCLI.Commands
 {
     public class StartFileConfigurationCommand : BaseCommand
     {
-        public StartFileConfigurationCommand(RootCommand rootCommand) : base(rootCommand) { }
+        private IScheduler _scheduler;
 
-        public override void InitializeCommand()
+        public StartFileConfigurationCommand(IScheduler scheduler)
+        {
+            _scheduler = scheduler;
+        }
+
+        public override void InitializeCommand(RootCommand rootCommand)
         {
             Command startByFileCommand = new("start", "Start checking services using YAML-file (by default, health-cli.yaml)");
 
@@ -21,9 +25,6 @@ namespace HealthCheckerCLI.Commands
             {
                 var yamlService = new ConfigurationService();
                 var config = await yamlService.GetDeserializeConfig();
-                if (config == null || config.Services == null) return;
-
-                IScheduler scheduler = await new StdSchedulerFactory().GetScheduler();
 
                 foreach (var service in config.Services)
                 {
@@ -41,20 +42,20 @@ namespace HealthCheckerCLI.Commands
                         .RepeatForever())
                     .Build();
 
-                    await scheduler.ScheduleJob(job, trigger);
+                    await _scheduler.ScheduleJob(job, trigger);
 
-                    await scheduler.Start();
+                    await _scheduler.Start();
 
                     Console.WriteLine($"Scheduler started for service [{service.Key}]. Press any key to stop...");
                 }
 
 
                 Console.ReadKey();
-                await scheduler.Shutdown();
+                await _scheduler.Shutdown();
                 Console.WriteLine("Scheduler stopped.");
             });
 
-            _rootCommand.AddCommand(startByFileCommand);
+            rootCommand.AddCommand(startByFileCommand);
         }
     }
 }

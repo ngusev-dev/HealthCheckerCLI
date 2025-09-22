@@ -6,9 +6,7 @@ namespace HealthCheckerCLI.Commands
 {
     public class CheckUrlCommand : BaseCommand
     {
-        public CheckUrlCommand(RootCommand rootCommand): base(rootCommand) {}
-
-        public override void InitializeCommand()
+        public override void InitializeCommand(RootCommand rootCommand)
         {
             Command checkedLinkCommand = new("checked", "Checked response stutus code of website");
 
@@ -29,7 +27,7 @@ namespace HealthCheckerCLI.Commands
                 Console.WriteLine($"Status code for '{link}' = [{(int)responseMessage.StatusCode}] {responseMessage.StatusCode}");
             });
 
-            _rootCommand.AddCommand(checkedLinkCommand);
+            rootCommand.AddCommand(checkedLinkCommand);
         }
     }
 }

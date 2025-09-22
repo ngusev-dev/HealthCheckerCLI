@@ -20,18 +20,20 @@ namespace HealthCheckerCLI.Services
 
        public async Task<HealthCheckConfiguration?> GetDeserializeConfig()
        {
+            if (!CheckConfigurationExsist()) throw new Exception("The configuration file was not found");
+
             try
             {
-                if(!CheckConfigurationExsist()) return null;
-
                 var yamlFile = await File.ReadAllTextAsync(CONFIG_PATH);
                 var config = _deserializer.Deserialize<HealthCheckConfiguration>(yamlFile);
+
+                if (config is null) throw new Exception("Empty file");
 
                 return config;
             } 
             catch
             {
-                return null;
+                throw new Exception("Error when processing the configuration file");
             }
             
        }

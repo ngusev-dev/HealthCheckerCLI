@@ -9,9 +9,9 @@ namespace HealthCheckerCLI.Quartz
     {
         private ServiceChecker _serviceChecker;
 
-        public CheckingServiceJob()
+        public CheckingServiceJob(ServiceChecker serviceChecker )
         {
-            _serviceChecker = new();
+            _serviceChecker = serviceChecker;
         }
 
         public Task Execute(IJobExecutionContext context)

@@ -11,24 +11,26 @@ namespace HealthCheckerCLI.Services
         private readonly CheckUrlCommand _checkUrlCommand;
         private readonly StartFileConfigurationCommand _startFileConfigurationCommand;
 
-        public CLIService()
+        public CLIService(
+            CheckUrlCommand checkUrlCommand,
+            StartFileConfigurationCommand startFileConfigurationCommand
+            )
         {
             _rootCommand = new(ROOT_COMMAND_NAME);
 
-            _checkUrlCommand = new(_rootCommand);
-            _startFileConfigurationCommand = new(_rootCommand);
+            _checkUrlCommand = checkUrlCommand;
+            _startFileConfigurationCommand = startFileConfigurationCommand;
         }
 
         private void InitializeCommands()
         {
-            _checkUrlCommand.InitializeCommand();
-            _startFileConfigurationCommand.InitializeCommand();
+            _checkUrlCommand.InitializeCommand(_rootCommand);
+            _startFileConfigurationCommand.InitializeCommand(_rootCommand);
         }
 
         public async Task StartUp(string[] args)
         {
             InitializeCommands();
-
             await _rootCommand.InvokeAsync(args).ConfigureAwait(false);
         }
     }
