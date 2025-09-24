@@ -9,7 +9,7 @@
 </p>
 
 <h2 align="center">
-  HealhChecker - CLI utility for monitoring services 📱
+  HealthChecker - CLI utility for monitoring services 📱
 </h2>
 
 <p align="center">
