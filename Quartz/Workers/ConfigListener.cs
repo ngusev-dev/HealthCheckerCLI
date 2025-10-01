@@ -1,4 +1,5 @@
 ﻿using HealthCheckerCLI.Helpers;
+using HealthCheckerCLI.Services;
 using System.Net;
 
 namespace HealthCheckerCLI.Quartz.Workers
@@ -7,6 +8,13 @@ namespace HealthCheckerCLI.Quartz.Workers
     {
         private HttpClient httpClient = new();
         private static Dictionary<string, int> attemptCounts = new();
+
+        private readonly TelegramService _telegramService;
+
+        public ServiceChecker(TelegramService telegramService)
+        {
+            _telegramService = telegramService;
+        }
 
         async public void PingService(HealthCheckEntry serviceEntry, string serviceName)
         {
@@ -26,8 +34,7 @@ namespace HealthCheckerCLI.Quartz.Workers
 
                 if (attemptCounts[serviceName] == serviceEntry.Attempts)
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine($"Отправка сообщения в TG");
+                    _telegramService.SendNotification();
                 }
                 attemptCounts[serviceName]++;
             } 

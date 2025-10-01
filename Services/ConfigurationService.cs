@@ -7,8 +7,13 @@ namespace HealthCheckerCLI.Services
     public class ConfigurationService
     {
         private const string CONFIG_PATH = "./health-cli.yaml";
-
         private readonly IDeserializer _deserializer;
+        private HealthCheckConfiguration? _configurationFile;
+
+        public HealthCheckConfiguration? configurationFile
+        {
+            get { return this._configurationFile; }
+        }
 
         public ConfigurationService()
         {
@@ -16,20 +21,19 @@ namespace HealthCheckerCLI.Services
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .IgnoreUnmatchedProperties()
                 .Build();
+
+            GetDeserializeConfig();
         }
 
-       public async Task<HealthCheckConfiguration?> GetDeserializeConfig()
+       private void GetDeserializeConfig()
        {
             if (!CheckConfigurationExsist()) throw new Exception("The configuration file was not found");
 
             try
             {
-                var yamlFile = await File.ReadAllTextAsync(CONFIG_PATH);
-                var config = _deserializer.Deserialize<HealthCheckConfiguration>(yamlFile);
-
-                if (config is null) throw new Exception("Empty file");
-
-                return config;
+                var yamlFile = File.ReadAllText(CONFIG_PATH);
+                _configurationFile = _deserializer.Deserialize<HealthCheckConfiguration>(yamlFile);
+                if (_configurationFile is null) throw new Exception("Empty file");
             } 
             catch
             {

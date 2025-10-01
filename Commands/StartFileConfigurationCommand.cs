@@ -11,10 +11,12 @@ namespace HealthCheckerCLI.Commands
     public class StartFileConfigurationCommand : BaseCommand
     {
         private IScheduler _scheduler;
+        private readonly ConfigurationService _configurationService;
 
-        public StartFileConfigurationCommand(IScheduler scheduler)
+        public StartFileConfigurationCommand(IScheduler scheduler, ConfigurationService configurationService)
         {
             _scheduler = scheduler;
+            _configurationService = configurationService;
         }
 
         public override void InitializeCommand(RootCommand rootCommand)
@@ -23,10 +25,10 @@ namespace HealthCheckerCLI.Commands
 
             startByFileCommand.Handler = CommandHandler.Create(async () =>
             {
-                var yamlService = new ConfigurationService();
-                var config = await yamlService.GetDeserializeConfig();
+                Console.WriteLine(_configurationService.configurationFile);
+                if (_configurationService.configurationFile?.Services is null) return;
 
-                foreach (var service in config.Services)
+                foreach (var service in _configurationService.configurationFile.Services)
                 {
                     IJobDetail job = JobBuilder.Create<CheckingServiceJob>()
                     .WithIdentity($"{service.Key}-Job", $"{service.Key}-Group")

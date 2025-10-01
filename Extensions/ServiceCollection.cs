@@ -13,6 +13,8 @@ namespace HealthCheckerCLI.Extensions
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             services.AddSingleton<CLIService>();
+            services.AddSingleton<TelegramService>();
+            services.AddSingleton<ConfigurationService>();
 
             services.AddTransient<CheckUrlCommand>();
             services.AddTransient<StartFileConfigurationCommand>();
