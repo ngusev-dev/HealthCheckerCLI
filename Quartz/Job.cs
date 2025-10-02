@@ -9,7 +9,7 @@ namespace HealthCheckerCLI.Quartz
     {
         private ServiceChecker _serviceChecker;
 
-        public CheckingServiceJob(ServiceChecker serviceChecker )
+        public CheckingServiceJob(ServiceChecker serviceChecker)
         {
             _serviceChecker = serviceChecker;
         }

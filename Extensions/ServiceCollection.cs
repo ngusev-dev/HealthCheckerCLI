@@ -12,6 +12,12 @@ namespace HealthCheckerCLI.Extensions
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
+            services.AddHttpClient("tg-api", c =>
+            {
+                c.BaseAddress = new("https://api.telegram.org/");
+
+            });
+
             services.AddSingleton<CLIService>();
             services.AddSingleton<TelegramService>();
             services.AddSingleton<ConfigurationService>();
