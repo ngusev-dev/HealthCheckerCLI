@@ -5,6 +5,7 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using HealthCheckerCLI.Quartz;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace HealthCheckerCLI.Commands
 {
@@ -12,11 +13,13 @@ namespace HealthCheckerCLI.Commands
     {
         private IScheduler _scheduler;
         private readonly ConfigurationService _configurationService;
+        private readonly ILogger<StartFileConfigurationCommand> _logger;
 
-        public StartFileConfigurationCommand(IScheduler scheduler, ConfigurationService configurationService)
+        public StartFileConfigurationCommand(IScheduler scheduler, ConfigurationService configurationService, ILogger<StartFileConfigurationCommand> logger)
         {
             _scheduler = scheduler;
             _configurationService = configurationService;
+            _logger = logger;
         }
 
         public override void InitializeCommand(RootCommand rootCommand)
@@ -25,7 +28,6 @@ namespace HealthCheckerCLI.Commands
 
             startByFileCommand.Handler = CommandHandler.Create(async () =>
             {
-                Console.WriteLine(_configurationService.configurationFile);
                 if (_configurationService.configurationFile?.Services is null) return;
 
                 foreach (var service in _configurationService.configurationFile.Services)
@@ -48,13 +50,14 @@ namespace HealthCheckerCLI.Commands
 
                     await _scheduler.Start();
 
-                    Console.WriteLine($"Scheduler started for service [{service.Key}]. Press any key to stop...");
+                    _logger.LogInformation($"Scheduler started for service [{service.Key}]");
                 }
-
+                
+                Console.WriteLine("HealthChecker has been successfully launched!");
 
                 Console.ReadKey();
                 await _scheduler.Shutdown();
-                Console.WriteLine("Scheduler stopped.");
+                _logger.LogInformation($"Scheduler stopped.");
             });
 
             rootCommand.AddCommand(startByFileCommand);

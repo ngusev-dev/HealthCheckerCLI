@@ -4,6 +4,7 @@
     {
         public Dictionary<string, HealthCheckEntry>? Services { get; set; }
         public NotificationEntry Notifications { get; set; } = new();
+        public LoggerEntry Logger { get; set; } = new();
     }
 
     public class HealthCheckEntry
@@ -18,5 +19,11 @@
     {
         public string TgBotKey { set; get; } = String.Empty;
         public string MessageTemplate { set; get; } = "Дефолтный шаблон";
+    }
+
+    public class LoggerEntry
+    {
+        public bool logInFile { get; set; } = false;
+        public string? filePath { get; set; }
     }
 }

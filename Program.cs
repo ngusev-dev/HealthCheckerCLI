@@ -10,7 +10,7 @@ class Programm
     {
         var services = new ServiceCollection();
 
-        services.ConfigureServices();
+        services.Configure();
 
         ServiceProvider provider = services.BuildServiceProvider();
         CLIService cli = provider.GetRequiredService<CLIService>();
