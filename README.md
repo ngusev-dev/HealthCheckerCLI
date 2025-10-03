@@ -13,6 +13,6 @@
 </h2>
 
 <p align="center">
- <em>Be confident in the work of your services</em>
+ <em>Be confident in the working of your services</em>
 </p>
 
