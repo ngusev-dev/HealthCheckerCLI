@@ -16,7 +16,7 @@
  <em>Be confident in the working of your services</em>
 </p>
 
-### Demo usage
+### 👨‍💻 Demo usage
 
 <img width="1129" height="578" alt="image" src="https://github.com/user-attachments/assets/583dcbee-f185-4cd4-9279-58d96e9e119b" />
 
