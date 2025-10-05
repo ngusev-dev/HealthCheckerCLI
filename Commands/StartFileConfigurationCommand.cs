@@ -5,7 +5,7 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using HealthCheckerCLI.Quartz;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace HealthCheckerCLI.Commands
 {
@@ -13,9 +13,9 @@ namespace HealthCheckerCLI.Commands
     {
         private IScheduler _scheduler;
         private readonly ConfigurationService _configurationService;
-        private readonly ILogger<StartFileConfigurationCommand> _logger;
+        private readonly ILogger _logger;
 
-        public StartFileConfigurationCommand(IScheduler scheduler, ConfigurationService configurationService, ILogger<StartFileConfigurationCommand> logger)
+        public StartFileConfigurationCommand(IScheduler scheduler, ConfigurationService configurationService, ILogger logger)
         {
             _scheduler = scheduler;
             _configurationService = configurationService;
@@ -50,14 +50,14 @@ namespace HealthCheckerCLI.Commands
 
                     await _scheduler.Start();
 
-                    _logger.LogInformation($"Scheduler started for service [{service.Key}]");
+                    _logger.Information($"Scheduler started for service [{service.Key}]");
                 }
                 
-                Console.WriteLine("HealthChecker has been successfully launched!");
+                Console.WriteLine("HealthChecker has been successfully launched! 122");
 
                 Console.ReadKey();
                 await _scheduler.Shutdown();
-                _logger.LogInformation($"Scheduler stopped.");
+                _logger.Information($"Scheduler stopped.");
             });
 
             rootCommand.AddCommand(startByFileCommand);

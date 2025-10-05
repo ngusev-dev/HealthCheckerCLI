@@ -36,9 +36,25 @@ namespace HealthCheckerCLI.Extensions
 
         public static IServiceCollection ConfigureLogger(this IServiceCollection services)
         {
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.File("./logs.txt", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
+            services.AddSingleton<Serilog.ILogger>((provider) =>
+            {
+                var configService = provider.GetRequiredService<ConfigurationService>();
+                var loggerConfig = new LoggerConfiguration();
+
+                if (configService.configurationFile != null)
+                {
+                    if(configService.configurationFile.Logger.logInFile)
+                        loggerConfig = loggerConfig.WriteTo.File(configService.configurationFile.Logger.filePath, rollingInterval: RollingInterval.Day);
+
+                    if(configService.configurationFile.Logger.consoleMode)
+                        loggerConfig = loggerConfig.WriteTo.Console();
+                }
+
+                var logger = loggerConfig.CreateLogger();
+                Log.Logger = logger;
+
+                return logger;
+            });
 
             services.AddLogging(loggingBuilder =>
             {

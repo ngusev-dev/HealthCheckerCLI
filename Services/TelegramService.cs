@@ -22,7 +22,7 @@ namespace HealthCheckerCLI.Services
                 
                 string message = cfgNotifications!.MessageTemplate
                     .Replace("{{SERVICE_NAME}}", serviceName)
-                    .Replace("{{SERVICE_LINK}}", serviceEntry.Link);
+                    .Replace("{{SERVICE_LINK}}", serviceEntry.Url);
 
                 using HttpRequestMessage requset = new(
                     HttpMethod.Get,

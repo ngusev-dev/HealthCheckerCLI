@@ -23,31 +23,56 @@ The services section contains services, where the key is the name of the service
 ```yaml
 services:
   api-name:
-    link: https://api.dev
+    url: https://api.dev
     interval: 5
     attempts: 4
   api-name-2:
-    link: https://api-2.com/
+    url: https://api-2.com/
     interval: 20
     attempts: 3
   api-name-3:
-    link: https://api-4.com/
+    url: https://api-4.com/
     interval: 10
     attempts: 2
     httpErrorCodes: [401, 500]
 notifications:
   tgBotKey: 7545313483:AAEl8JzG_6ro4SDaCOhQGn5vCaeMAtmBvaY
-  messageTemplate: "[{{SERVICE_NAME}}] URL: {{SERVICE_LINK}} не доступен в данный момент"
+  messageTemplate: "[{{SERVICE_NAME}}] URL: {{SERVICE_LINK}} is unavailable at the moment"
+logger:
+  logInFile: true
+  consoleMode: true
+  filePath: './health-checker.txt'
 ```
 
 ## 🗄 Configuration
 
-### Service Configuration
+### 💻 Service Configuration
 
 Each service in the `services` array supports the following parameters:
 
 | Parameter | Required | Description | Example |
 |-----------|----------|-------------|---------|
-| `link` | ✅ | Service URL to check | `https://api.dev/` |
-| `interval` | ✅ | Check interval in milliseconds | `30`, `60` |
+| `url` | ✅ | Service URL to check | `https://api.dev/` |
+| `interval` | ❌ | Check interval in seconds. Default - `10` seconds | `30`, `60` |
+| `attempts` | ❌ | Number of attempts after which the notification will be sent. Default - `1` | `1`, `4` |
 | `httpErrorCodes` | ❌ | A set of status codes that will generate an error.<br> By default, `404, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511` | `[401, 500]` |
+
+
+### 🔔 Notification Configuration
+
+| Parameter | Required | Description | Example |
+|-----------|----------|-------------|---------|
+| `tgBotKey` | ❌ | The key to the telegram bot. If it is empty, then notifications are not received through TG | `7545313483:AAEl8JzG_6ro4SDaCOhQGn5vCaeMAtmBvaY` |
+| `messageTemplate` | ❌ | Your custom error message.  | Default message: `[{{SERVICE_NAME}}] URL: {{SERVICE_LINK}} is unavailable at the moment` |
+
+> You can use global variables in `messageTemplate` such as:
+> 1. `{{SERVICE_NAME}}` - name of the service
+> 2. `{{SERVICE_LINK}}` - service url
+
+### ✍️ Logger Configuration
+
+| Parameter | Required | Description | Example |
+|-----------|----------|-------------|---------|
+| `logInFile` | ❌ | Write logs to a file. Default = `false` | `true` |
+| `consoleMode` | ❌ |  Output logs to the console when running the utility. Default = `false` | `true` |
+| `filePath` | ❌ | The path to saving logs (it works if `logInFile = true`). Default = `./logs.txt` | `./health-checker.txt` |
